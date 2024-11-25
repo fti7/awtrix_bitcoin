@@ -1,0 +1,281 @@
+[
+    {
+        "id": "928e76fe90e4b0b2",
+        "type": "group",
+        "z": "5952ac5e35d08c18",
+        "style": {
+            "stroke": "#2b2b2b",
+            "stroke-opacity": "1",
+            "fill": "#181818",
+            "fill-opacity": "0.5",
+            "label": true,
+            "label-position": "nw",
+            "color": "#cccccc"
+        },
+        "nodes": [
+            "30d18f9c2bdedc24",
+            "52a47dabab5920f8",
+            "899e05b3fdb39f52",
+            "0f3adbee2be59c5b",
+            "74243b903398cd5a",
+            "675ec78be173b19b",
+            "093cb114e4edfdf7",
+            "7a5a94f521f1a7d9",
+            "d60c52eb6ea6ed25",
+            "30122ee8832c8781"
+        ],
+        "x": 54,
+        "y": 251.5,
+        "w": 1012,
+        "h": 249.5
+    },
+    {
+        "id": "30d18f9c2bdedc24",
+        "type": "websocket out",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "server": "",
+        "client": "5767230c7420f162",
+        "x": 340,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "52a47dabab5920f8",
+        "type": "websocket in",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "server": "",
+        "client": "5767230c7420f162",
+        "x": 200,
+        "y": 300,
+        "wires": [
+            [
+                "0f3adbee2be59c5b"
+            ]
+        ]
+    },
+    {
+        "id": "899e05b3fdb39f52",
+        "type": "inject",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "{\"method\":\"subscribe\",\"params\":{\"channel\":\"ticker\",\"symbol\":[\"BTC/USD\"]}}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "30d18f9c2bdedc24"
+            ]
+        ]
+    },
+    {
+        "id": "0f3adbee2be59c5b",
+        "type": "json",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 390,
+        "y": 300,
+        "wires": [
+            [
+                "74243b903398cd5a"
+            ]
+        ]
+    },
+    {
+        "id": "74243b903398cd5a",
+        "type": "switch",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "property": "payload.channel",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "heartbeat",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ticker",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 530,
+        "y": 300,
+        "wires": [
+            [],
+            [
+                "675ec78be173b19b"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "675ec78be173b19b",
+        "type": "change",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "high",
+                "pt": "msg",
+                "to": "payload.data[0].high",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "low",
+                "pt": "msg",
+                "to": "payload.data[0].low",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "avg",
+                "pt": "msg",
+                "to": "payload.data[0].vwap",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.data[0].last",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 300,
+        "wires": [
+            [
+                "093cb114e4edfdf7",
+                "d60c52eb6ea6ed25"
+            ]
+        ]
+    },
+    {
+        "id": "093cb114e4edfdf7",
+        "type": "debug",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "current price",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 950,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7a5a94f521f1a7d9",
+        "type": "function",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "Bitcoin App",
+        "func": "\n// Config\nlet btc_m_notation = false\nlet btc_lowhigh = true\n\n// Init\nlet btc_color = \"#000000\";\nlet btc_icon = \"8267\";\n\nmsg.btcusd_avg = parseFloat(msg.avg);\nmsg.btcusd_current = parseFloat(msg.payload);\n\nmsg.name = \"bitcoin\"; // HTTP API Appname\n\nif (msg.btcusd_current > msg.btcusd_avg) {\n    // green = price above daily average\n    btc_color = \"#80ff82\";\n    btc_icon = \"bitcoin\";\n} else {\n    // red = price below daily average\n    btc_color = \"#ff7373\";\n    btc_icon = \"8267\"; // 1097\n}\n\nlet btc_value = \"\";\nif (btc_m_notation) {\n    btc_value = String(Number(msg.payload) / 1000000).substring(0, 4) + \"M\";\n} else {\n    btc_value = String(Math.round(Number(msg.payload)));\n}\n\nlet awtrix_data = {\n    text: btc_value,\n    icon: btc_icon,\n    color: btc_color,\n    lifetime: \"30\",\n    lifetimeMode: \"1\",\n\n}\n\nif (btc_lowhigh) {\n    let pct = ((msg.payload - msg.low) / (msg.high - msg.low));\n    let bar_start = 10;\n    let bar_width = 20;\n    let bar_pct_width = bar_width * pct;\n    awtrix_data[\"draw\"] = [\n            { \"dl\": [bar_start, 7, Math.round(bar_start+bar_width), 7, \"#ff7373\"] },\n            { \"dl\": [bar_start, 7, Math.round(bar_start+bar_pct_width), 7, \"#80ff82\"] },\n            { \"dp\": [bar_start+bar_pct_width+1, 7, \"#ffffff\"] }\n\n        ]\n}\n\nmsg.payload = JSON.stringify(awtrix_data);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 460,
+        "wires": [
+            [
+                "30122ee8832c8781"
+            ]
+        ]
+    },
+    {
+        "id": "d60c52eb6ea6ed25",
+        "type": "throttle",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "throttleType": "time",
+        "timeLimit": "1",
+        "timeLimitType": "seconds",
+        "countLimit": 0,
+        "blockSize": 0,
+        "locked": false,
+        "x": 170,
+        "y": 460,
+        "wires": [
+            [
+                "7a5a94f521f1a7d9"
+            ]
+        ]
+    },
+    {
+        "id": "30122ee8832c8781",
+        "type": "http request",
+        "z": "5952ac5e35d08c18",
+        "g": "928e76fe90e4b0b2",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://10.1.5.184/api/custom",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 510,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5767230c7420f162",
+        "type": "websocket-client",
+        "path": "wss://ws.kraken.com/v2",
+        "tls": "",
+        "wholemsg": "false",
+        "hb": "30",
+        "subprotocol": "",
+        "headers": []
+    }
+]
